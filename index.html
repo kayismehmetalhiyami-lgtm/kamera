@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Otomatik Kamera</title>
+<style>
+  body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #000;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    height: 100vh;
+  }
+
+  video {
+    width: 90%;
+    max-width: 400px;
+    border-radius: 10px;
+    border: 2px solid #0f0;
+  }
+
+  img {
+    width: 90%;
+    max-width: 400px;
+    margin-top: 10px;
+    border-radius: 10px;
+    border: 2px solid #0f0;
+  }
+
+  p {
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Otomatik Kamera</h1>
+<video id="video" autoplay playsinline></video>
+<img id="photo" alt="Fotoğraf otomatik çekilecek">
+<p id="status">Fotoğraf bekleniyor...</p>
+
+<script>
+const video = document.getElementById('video');
+const photo = document.getElementById('photo');
+const status = document.getElementById('status');
+
+// Kamerayı başlat
+async function startCamera() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    video.srcObject = stream;
+    status.textContent = "Kamera açık, fotoğraf otomatik çekiliyor...";
+
+    // 3 saniye sonra otomatik fotoğraf çek
+    setTimeout(() => {
+      capturePhoto();
+    }, 3000);
+
+  } catch (err) {
+    status.textContent = "Kamera açılamadı: " + err;
+  }
+}
+
+// Fotoğraf çek
+function capturePhoto() {
+  const canvas = document.createElement('canvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0);
+  photo.src = canvas.toDataURL('image/png');
+  status.textContent = "Fotoğraf çekildi!";
+}
+
+// Kamera başlat
+startCamera();
+</script>
+
+</body>
+</html>
